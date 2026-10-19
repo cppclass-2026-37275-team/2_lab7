@@ -1,8 +1,8 @@
 #pragma once// 헤더가드
 #include <iostream>
-
 namespace KimYeonjin2693058
 {
+    const int daysInMonth[13]{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     class dayOfYear
     {
@@ -19,9 +19,21 @@ namespace KimYeonjin2693058
 
         void testDay()
         {
-            if ((day < 1) || (day > 31)){
+            if ((day < 1) || (day > daysInMonth[month]))
+            {
                 std::cout << "Invalid day\n";
                 std::exit(1);
+            }
+        }
+
+        void updateDay()
+        {
+            int maxDay{daysInMonth[month]};
+            while (day > maxDay)
+            {
+                day -= maxDay; month += 1;
+                if(month > 12) month -= 12;
+                maxDay = daysInMonth[month];
             }
         }
     
@@ -94,31 +106,25 @@ namespace KimYeonjin2693058
         int getMonth() const { return month; }
         int getDay() const { return day; }
 // -멤버함수로 전위증가연산자, 후위증가연산자 정의
-        dayOfYear operator++()
+        dayOfYear& operator++()
         {
             ++day;
-            if (day > 31)
-            {
-                ++month;
-                if(month > 12) month -= 12;
-                day-=31;//day = day - 31;
-            }
-            return dayOfYear{month, day};
+            updateDay();
+            return *this;//dayOfYear{month, day};
         }
 
         dayOfYear operator++(int)
         {
-            dayOfYear temp{month, day};
-             ++day;
-            if (day > 31)
-            {
-                ++month;
-                if(month > 12) month -= 12;
-                day-=31;//day = day - 31;
-            }
-            //operator++();
+            dayOfYear temp{*this};//{month, day};
+            ++(*this);//++day;updateDay();
             return temp;
         }
+        dayOfYear& operator+=(int p)
+        {
+            day += p; updateDay();
+            return *this;
+        }
+
         friend bool operator==(const dayOfYear& d1, const dayOfYear& d2)
         {
             return d1.month == d2.month && d1.day == d2.day;

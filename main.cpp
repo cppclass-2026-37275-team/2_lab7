@@ -1,3 +1,4 @@
+#include <iostream>
 #include "dayOfYear.h"
 
 namespace KimYeonjin2693058
